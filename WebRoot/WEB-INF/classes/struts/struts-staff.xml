@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<package name="sta" namespace="/"  extends="common" >
+		<action name="staffAction_*" class="com.td.staff.web.action.StaffAction" method="{1}" >
+			<result name="success" type="redirectAction" >staffAction_home</result>
+			<result name="home">/WEB-INF/pages/frame.jsp</result>
+			<result name="findAll" >/WEB-INF/pages/staff/listStaff.jsp</result>
+			<result name="logout" type="redirect">/index.jsp</result>
+			<result name="editUI" >/WEB-INF/pages/staff/editStaff.jsp</result>
+			<result name="edit" type="redirectAction">staffAction_findAll</result>
+			<result name="add" type="redirectAction">staffAction_findAll</result>
+			<result name="addUI" >/WEB-INF/pages/staff/addStaff.jsp</result>
+			<result name="delete" type="redirectAction">staffAction_findAll</result>
+			<result name="findAllByCondition" >/WEB-INF/pages/staff/listStaff.jsp</result>
+			<result name="loginn" type="redirectAction">staffAction_logout</result>
+		</action>
+	</package>
+</struts>	

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+							http://www.springframework.org/schema/beans/spring-beans.xsd
+							http://www.springframework.org/schema/tx 
+							http://www.springframework.org/schema/tx/spring-tx.xsd
+							http://www.springframework.org/schema/aop 
+							http://www.springframework.org/schema/aop/spring-aop.xsd
+							http://www.springframework.org/schema/context 
+							http://www.springframework.org/schema/context/spring-context.xsd">
+			
+	<context:property-placeholder location="classpath:jdbcinfo.properties" /><!-- 加载jdbcinfo.properties文件 -->
+	<bean id="dataSourceId" class="com.mchange.v2.c3p0.ComboPooledDataSource" ><!-- 加载数据源 -->
+		<property name="driverClass" value="${jdbc.driverClass}"></property>
+		<property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
+		<property name="user" value="${jdbc.user}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+	</bean>
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" ><!-- 加载sessionfactory工厂 -->
+		<property name="dataSource" ref="dataSourceId" ></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+			</props>
+		</property>
+		<property name="mappingLocations" value="classpath:com/td/*/domain/*.hbm.xml" ></property>
+	</bean>
+	<bean id="txManagerId" class="org.springframework.orm.hibernate3.HibernateTransactionManager" ><!-- 配置事务管理器 -->
+		<property name="sessionFactory" ref="sessionFactory" ></property>
+	</bean>
+	<tx:advice id="txAdviceId" transaction-manager="txManagerId" ><!-- 配置事务详情 -->
+		<tx:attributes>
+			<tx:method name="add*"/>
+			<tx:method name="update*"/>
+			<tx:method name="delete*"/>
+			<tx:method name="find*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+	<aop:config><!-- 配置需要去 用事务的所有类及方法 -->
+		<aop:advisor advice-ref="txAdviceId" pointcut="execution(* com.td.*.service..*.*(..))" />
+	</aop:config>
+	
+	
+	<import resource="applicationContext-staff.xml"/><!-- 导入其他子文件 -->
+	<import resource="applicationContext-department.xml"/>		
+	<import resource="applicationContext-post.xml"/>	
+	<import resource="applicationContext-courseType.xml"/>	
+	<import resource="applicationContext-classes.xml"/>		
+</beans>							

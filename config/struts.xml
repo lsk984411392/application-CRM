@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<constant name="struts.devMode" value="true"></constant><!-- 设置开发模式 -->
+	<constant name="struts.ui.theme" value="simple"></constant><!-- 标签主题，简单风格 -->
+	<package name="common" namespace="/"  extends="struts-default" >
+		<interceptors>
+			<interceptor name="loginInterceptor" class="com.td.web.interceptor.LoginInterceptor"></interceptor><!-- 声明我的自定义拦截器 -->
+			<interceptor-stack name="myInterceptorStack"><!-- 声明一个我的自定义拦截器栈 -->
+				<interceptor-ref name="defaultStack">
+					<param name="fileUpload.allowedExtensions">.xls,.xlsx</param>
+				</interceptor-ref>
+				<interceptor-ref name="loginInterceptor">
+					<param name="excludeMethods">login</param>
+				</interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="myInterceptorStack"></default-interceptor-ref><!--将自定义拦截器栈改为默认拦截器栈	 -->
+		
+		<global-results><!-- 配置全局结果集 -->
+			<result name="login">/WEB-INF/pages/login.jsp</result>
+		</global-results>
+		
+		<action name="uiAction_*_*"><!-- 将所有jsp文件放入web-inf下面，不能直接访问只能通过内部转发 -->
+			<result>/WEB-INF/pages/{1}/{2}.jsp</result>
+		</action>
+		
+	</package>
+	
+	<include file="struts/struts-staff.xml"></include>
+	<include file="struts/struts-post.xml"></include>
+	<include file="struts/struts-coureseType.xml"></include>
+	<include file="struts/struts-classes.xml"></include>
+	<include file="struts/strut-department.xml"></include>
+	
+</struts>	
